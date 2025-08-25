@@ -23,6 +23,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="LinkedListWithAutoPtr.h" />
+    <ClInclude Include="NodeWithAutoPtr.h" />
     <ClInclude Include="SingleNode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

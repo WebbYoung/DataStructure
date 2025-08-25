@@ -26,5 +26,11 @@
     <ClInclude Include="SingleNode.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LinkedListWithAutoPtr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeWithAutoPtr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

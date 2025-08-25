@@ -1,4 +1,7 @@
 #pragma once
+
+//泛型单向链表(非智能指针)C++实现
+
 #include <iostream>
 #include <stdexcept>
 #include "SingleNode.h"

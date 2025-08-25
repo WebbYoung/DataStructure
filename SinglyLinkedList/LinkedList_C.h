@@ -2,6 +2,8 @@
 #include<stdio.h>
 #include <stdlib.h>
 #define object int
+#define CHECK_LIST(list) if (list == NULL) return;
+
 #define CHECK_MEMORY(node) if (node == NULL) {\
 printf("Memory allocation error!");\
 return NULL;\
@@ -26,16 +28,16 @@ static Node* new_node(object data, Node* next) {
     return newNode;
 }
 static void push_front(object data, List* list) {
-    if (list == NULL)return;
-    list->head = new_node(data, list->head);
-    Node* curr = list->head;
-    while (curr->next!=NULL) {
-        curr = curr->next;
+    CHECK_LIST(list);
+    if (list->head == NULL) {
+        list->tail = new_node(data, NULL);
+        list->head = list->tail;
+        return;
     }
-    list->tail = curr;
+    list->head = new_node(data, list->head);
 }
 static void push_back(object data, List* list) {
-    if (list == NULL)return;
+    CHECK_LIST(list);
     Node* newNode = new_node(data, NULL);
     Node** head = &(list->head);
     Node** tail = &(list->tail);
@@ -48,7 +50,7 @@ static void push_back(object data, List* list) {
     *tail = newNode;
 }
 static void traverse(List* list) {
-    if (list == NULL || list->head == NULL)return;
+    CHECK_LIST(list);
     Node* curr = list->head;
     printf("[");
     while (curr!= NULL) {
@@ -59,7 +61,7 @@ static void traverse(List* list) {
     printf("]\n");
 }
 static void free_list(List* list) {
-    if (list == NULL||list->head==NULL)return;
+    CHECK_LIST(list);
     Node* curr=list->head;
     Node* next_ptr;
     while (curr != NULL) {
@@ -71,4 +73,19 @@ static void free_list(List* list) {
     next_ptr = NULL;
     list->head = NULL;
     list->tail = NULL;
+}
+static void reverse_list(List* list) {
+    CHECK_LIST(list);
+    Node* prev = NULL;
+    Node* curr = list->head;
+    Node* next = NULL;
+    Node* old_head = list->head;
+    while (curr!=NULL) {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    list->tail = old_head;
+    list->head = prev;
 }

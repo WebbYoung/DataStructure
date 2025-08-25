@@ -9,6 +9,8 @@ auto main() -> int {
         push_back(i, &list);
         push_front(9 - i, &list);
     }
+    reverse_list(&list);
     traverse(&list);
+    free_list(&list);
 	return 0;
 }

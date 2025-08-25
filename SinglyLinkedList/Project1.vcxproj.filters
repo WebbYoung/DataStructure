@@ -32,5 +32,8 @@
     <ClInclude Include="NodeWithAutoPtr.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LinkedList_C.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="LinkedListWithAutoPtr.h" />
+    <ClInclude Include="LinkedList_C.h" />
     <ClInclude Include="NodeWithAutoPtr.h" />
     <ClInclude Include="SingleNode.h" />
   </ItemGroup>

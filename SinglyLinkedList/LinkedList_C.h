@@ -15,11 +15,14 @@ typedef struct CListNode {
 typedef struct CList {
     Node* head;
     Node* tail;
+    size_t size;
 }List;
+//初始化链表
 static void initialize_CList(List* list) {
     list->head = NULL;
     list->tail = NULL;
 }
+//创建新节点
 static Node* new_node(object data, Node* next) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     CHECK_MEMORY(newNode);
@@ -27,15 +30,19 @@ static Node* new_node(object data, Node* next) {
     newNode->next = next;
     return newNode;
 }
+//头插法
 static void push_front(object data, List* list) {
     CHECK_LIST(list);
     if (list->head == NULL) {
         list->tail = new_node(data, NULL);
         list->head = list->tail;
+        list->size++;
         return;
     }
     list->head = new_node(data, list->head);
+    list->size++;
 }
+//尾插法
 static void push_back(object data, List* list) {
     CHECK_LIST(list);
     Node* newNode = new_node(data, NULL);
@@ -44,11 +51,14 @@ static void push_back(object data, List* list) {
     if (*head == NULL) {
         *head = newNode;
         *tail = *head;
+        list->size++;
         return;
     }
     (*tail)->next = newNode;
     *tail = newNode;
+    list->size++;
 }
+//遍历链表
 static void traverse(List* list) {
     CHECK_LIST(list);
     Node* curr = list->head;
@@ -60,6 +70,7 @@ static void traverse(List* list) {
     }
     printf("]\n");
 }
+//释放链表
 static void free_list(List* list) {
     CHECK_LIST(list);
     Node* curr=list->head;
@@ -73,7 +84,9 @@ static void free_list(List* list) {
     next_ptr = NULL;
     list->head = NULL;
     list->tail = NULL;
+    list->size = 0;
 }
+//反转链表
 static void reverse_list(List* list) {
     CHECK_LIST(list);
     Node* prev = NULL;
@@ -88,4 +101,87 @@ static void reverse_list(List* list) {
     }
     list->tail = old_head;
     list->head = prev;
+}
+//从头部删除元素
+static void pop_front(List* list) {
+    CHECK_LIST(list);
+    if (list->head == NULL)return;
+    Node* next = list->head->next;
+    free(list->head);
+    list->head = next;
+    list->size--;
+}
+//从尾部删除元素
+static void pop_back(List* list) {
+    CHECK_LIST(list);
+    if (list->head == NULL)return;
+    Node* last = list->head;
+    if (last->next == NULL) {
+        free(last);
+        list->size = 0;
+        return;
+    }
+    while (last->next->next != NULL) {
+        last = last->next;
+    }
+    free(list->tail);
+    last->next = NULL;
+    list->tail = last;
+    list->size--;
+}
+//从指定位置删除元素
+static void erase(size_t index,List* list){
+    if (index >= list->size) {
+        printf("index out of range");
+        return;
+    }
+    if (index == 0) {
+        pop_front(list);
+        return;
+    }
+    if (index == list->size - 1) {
+        pop_back(list);
+        return;
+    }
+    Node* current = list->head;
+    for (size_t i = 0; i < index - 1; ++i) {
+        current = current->next;
+    }
+    Node* to_delete = current->next;
+    current->next = to_delete->next;
+    free(to_delete);
+    list->size--;
+}
+//获取指定位置的元素
+static object at(size_t index, List* list) {
+    if (index >= list->size) {
+        printf("index out of range");
+        return;
+    }
+    Node* current = list->head;
+    for (size_t i = 0; i < index; ++i) {
+        current = current->next;
+    }
+    return current->data;
+}
+//在指定位置插入元素
+static void insert(size_t index, object data, List* list) {
+    if (index > list->size) {
+        printf("index out of range");
+        return;
+    }
+    if (index == 0) {
+        push_front(data, list);
+        return;
+    }
+    if (index == list->size) {
+        push_back(data, list);
+        return;
+    }
+    Node* current = list->head;
+    for (size_t i = 0; i < index - 1; ++i) {
+        current = current->next;
+    }
+    current->next = new_node(data, current->next);
+    list->size++;
 }

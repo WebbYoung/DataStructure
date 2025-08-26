@@ -7,8 +7,9 @@ auto main() -> int {
     initialize_CList(&list);
     for (int i = 0;i < 10;i++) {
         push_back(i, &list);
-        push_front(9 - i, &list);
     }
+    pop_front(&list);
+    pop_back(&list);
     reverse_list(&list);
     traverse(&list);
     free_list(&list);

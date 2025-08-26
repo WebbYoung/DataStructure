@@ -11,6 +11,7 @@ return NULL;\
 typedef struct CListNode {
     object data;
     struct CListNode* next;
+    struct CListNode* prev;
 }Node;
 typedef struct CList {
     Node* head;
@@ -24,29 +25,32 @@ static void initialize_CList(List* list) {
     list->size = 0;
 }
 //创建新节点
-static Node* new_node(object data, Node* next) {
+static Node* new_node(object data, Node* prev,Node*next) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     CHECK_MEMORY(newNode);
     newNode->data = data;
     newNode->next = next;
+    newNode->prev = prev;
     return newNode;
 }
 //头插法
 static void push_front(object data, List* list) {
     CHECK_LIST(list);
     if (list->head == NULL) {
-        list->tail = new_node(data, NULL);
+        list->tail = new_node(data, NULL,NULL);
         list->head = list->tail;
         list->size++;
         return;
     }
-    list->head = new_node(data, list->head);
+    Node* old_head = list->head;
+    list->head = new_node(data, NULL,list->head);
+    old_head->prev = list->head;
     list->size++;
 }
 //尾插法
 static void push_back(object data, List* list) {
     CHECK_LIST(list);
-    Node* newNode = new_node(data, NULL);
+    Node* newNode = new_node(data, list->tail,NULL);
     Node** head = &(list->head);
     Node** tail = &(list->tail);
     if (*head == NULL) {
@@ -59,22 +63,35 @@ static void push_back(object data, List* list) {
     *tail = newNode;
     list->size++;
 }
-//遍历链表
+//正向遍历链表
 static void traverse(List* list) {
     CHECK_LIST(list);
     Node* curr = list->head;
     printf("[");
-    while (curr!= NULL) {
+    while (curr != NULL) {
         printf("%d", curr->data);
         if (curr->next != NULL)printf(",");
         curr = curr->next;
     }
     printf("]\n");
 }
+//反向遍历链表
+
+static void reverse_traverse(List* list) {
+    CHECK_LIST(list);
+    Node* curr = list->tail;
+    printf("[");
+    while (curr != NULL) {
+        printf("%d", curr->data);
+        if (curr->prev != NULL)printf(",");
+        curr = curr->prev;
+    }
+    printf("]\n");
+}
 //释放链表
 static void free_list(List* list) {
     CHECK_LIST(list);
-    Node* curr=list->head;
+    Node* curr = list->head;
     Node* next_ptr;
     while (curr != NULL) {
         next_ptr = curr->next;
@@ -87,22 +104,7 @@ static void free_list(List* list) {
     list->tail = NULL;
     list->size = 0;
 }
-//反转链表
-static void reverse_list(List* list) {
-    CHECK_LIST(list);
-    Node* prev = NULL;
-    Node* curr = list->head;
-    Node* next = NULL;
-    Node* old_head = list->head;
-    while (curr!=NULL) {
-        next = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = next;
-    }
-    list->tail = old_head;
-    list->head = prev;
-}
+
 //从头部删除元素
 static void pop_front(List* list) {
     CHECK_LIST(list);
@@ -110,6 +112,7 @@ static void pop_front(List* list) {
     Node* next = list->head->next;
     free(list->head);
     list->head = next;
+    list->head->prev = NULL;
     list->size--;
 }
 //从尾部删除元素
@@ -131,7 +134,7 @@ static void pop_back(List* list) {
     list->size--;
 }
 //从指定位置删除元素
-static void erase(size_t index,List* list){
+static void erase(size_t index, List* list) {
     if (index >= list->size) {
         printf("index out of range");
         return;
@@ -150,6 +153,7 @@ static void erase(size_t index,List* list){
     }
     Node* to_delete = current->next;
     current->next = to_delete->next;
+    to_delete->next->prev = current;
     free(to_delete);
     list->size--;
 }
@@ -159,9 +163,21 @@ static object at(size_t index, List* list) {
         printf("index out of range");
         return NULL;
     }
-    Node* current = list->head;
-    for (size_t i = 0; i < index; ++i) {
-        current = current->next;
+    Node* current;
+    size_t pos;
+    if (index < list->size / 2) {
+        current = list->head;
+        pos = index;
+        for (size_t i = 0; i < pos; ++i) {
+            current = current->next;
+        }
+    }
+    else {
+        current = list->tail;
+        pos = list->size - index-1;
+        for (size_t i = 0; i < pos; ++i) {
+            current = current->prev;
+        }
     }
     return current->data;
 }
@@ -183,6 +199,6 @@ static void insert(size_t index, object data, List* list) {
     for (size_t i = 0; i < index - 1; ++i) {
         current = current->next;
     }
-    current->next = new_node(data, current->next);
+    current->next = new_node(data, current->next,NULL);
     list->size++;
 }

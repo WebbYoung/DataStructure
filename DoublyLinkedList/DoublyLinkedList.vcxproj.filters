@@ -18,12 +18,21 @@
     <ClCompile Include="main.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DoublyNode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DoublyLinkedList.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CircularList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DoublyNode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DoublyLinkedList_CPP.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
